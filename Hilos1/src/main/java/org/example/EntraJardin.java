@@ -10,6 +10,10 @@ public class EntraJardin extends Thread{
 
     @Override
     public void run() {
-        recursoServidor.incrementarCuenta();
+        for (int i = 0; i < 10; i++) {
+            synchronized (recursoServidor){
+                recursoServidor.incrementarCuenta();
+            }
+        }
     }
 }

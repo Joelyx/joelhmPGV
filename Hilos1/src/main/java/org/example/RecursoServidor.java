@@ -7,7 +7,7 @@ public class RecursoServidor {
         this.cuenta = 0;
     }
 
-    synchronized public void incrementarCuenta(){
+    public void incrementarCuenta(){
         System.out.println(Thread.currentThread().getName()+" ---> Entra al servidor");
 
         this.cuenta++;
