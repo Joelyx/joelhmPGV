@@ -9,10 +9,10 @@ public class Buffer {
     public synchronized boolean addToBuffer(char input) {
         try {
             while (buffer.size() >= maxSize) {
+                notify();
                 wait(); // Esperar si el búfer está lleno
             }
             buffer.push(input);
-            notify(); // Notificar a los hilos esperando
             System.out.println("Buffer" + buffer.toString());
             return true;
         } catch (InterruptedException e) {
