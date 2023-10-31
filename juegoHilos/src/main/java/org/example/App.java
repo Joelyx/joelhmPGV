@@ -5,13 +5,8 @@ import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
 public class App {
-    private static final int BOARD_SIZE = 5;
-    private static boolean[][] marked;
-    private static int targetRow, targetCol;
-    private static boolean gameOver = false;
 
     public static void main(String[] args) {
-
         Semaphore turno = new Semaphore(1);
         Scanner sc = new Scanner(System.in);
         System.out.println("Introduce el tamaño del tablero (entre 5 y 10): ");
@@ -20,15 +15,16 @@ public class App {
         int barcos = sc.nextInt();sc.nextLine();
         //sc.close();
 
-        Tablero tablero = new Tablero(size, barcos);
 
-        tablero.initializeBoard();
+        Tablero tablero = new Tablero(size, barcos); //Aqui reside la modificacion del tamaño del tablero y la cantidad de barcos
 
         UserThread userThread = new UserThread(tablero, turno);
         IAThread iaThread = new IAThread(tablero, turno);
 
-        userThread.run();
-        iaThread.run();
+        Thread userThreadT = new Thread(userThread);
+        Thread iaThreadT = new Thread(iaThread);
 
+        userThreadT.start();
+        iaThreadT.start();
     }
 }

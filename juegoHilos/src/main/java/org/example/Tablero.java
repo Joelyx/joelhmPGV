@@ -10,6 +10,12 @@ public class Tablero {
     private ArrayList<Barco> barcos;
     private boolean gameOver=false;
 
+    /**
+     *  Constructor de la clase Tablero que inicializa el tablero con el tamaño y el numero de barcos que se le pasa
+     *  Es dinamico para poder poner un numero variable de barcos y un tamaño variable (Modificacion 3 y 4)
+     * @param size
+     * @param numBarcos
+     */
     public Tablero(int size, int numBarcos){
         this.BOARD_SIZE=size;
         this.numBarcos = numBarcos;
@@ -24,30 +30,49 @@ public class Tablero {
     }
 
 
-
+    /**
+     *  Metodo que inicializa el tablero con el tamaño y el numero de barcos que se le pasa
+     */
     public void initializeBoard() {
         for (int i = 0; i < this.BOARD_SIZE; i++) {
             for (int j = 0; j < this.BOARD_SIZE; j++) {
                 board[i][j] = '~'; // Agua
             }
         }
-        for (int i = 0; i < numBarcos; i++) {
+        int i=0;
+        while( i <= numBarcos-1) {
             int targetRow = (new Random()).nextInt(this.BOARD_SIZE);
             int targetCol = (new Random()).nextInt(this.BOARD_SIZE);
-            if (!barcos.isEmpty()) {
+            boolean vacio = false;
+            if(barcos.isEmpty()){
+                barcos.add(new Barco(targetRow, targetCol));
+                i++;
+            }else {
                 for (Barco barco : barcos) {
                     if (barco.getX() == targetRow && barco.getY() == targetCol) {
-                        i--;
                         continue;
+                    } else {
+                        vacio = true;
                     }
                 }
-            } else {
-                barcos.add(new Barco(targetRow, targetCol));
-                i--;
+                if (vacio) {
+                    barcos.add(new Barco(targetRow, targetCol));
+                    System.out.println("Barco añadido en " + targetRow + targetCol +" i= "+i);
+                    i++;
+                    vacio = false;
+                }
             }
         }
+        System.out.println("Barcos: " + barcos.size());
+
     }
 
+    /**
+     * Metodo que comprueba si el disparo es acertado o no
+     * @param rowLetter Letra de la fila
+     * @param col int de la Columna
+     * @return boolean que indica si el disparo es acertado o no
+     */
     public boolean checkGuess(char rowLetter, int col) {
         int row = (int)(rowLetter - 'A');
         col = col - 1; // Ajustar porque los índices del array empiezan en 0
@@ -78,18 +103,34 @@ public class Tablero {
     }
 
 
+    /**
+     * Metodo que imprime el tablero
+     * Este incluye los barcos para hcer mas sencillo es testing
+     */
     public void printBoard() {
-        System.out.print("  ");
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            System.out.print((i + 1) + " ");
-        }
-        System.out.println();
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            System.out.print((char) ('A' + i) + " ");
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                System.out.print(board[i][j] + " ");
+        if(!gameOver) {
+            System.out.print("  ");
+            for (int i = 0; i < BOARD_SIZE; i++) {
+                System.out.print((i + 1) + " ");
             }
             System.out.println();
+            for (int i = 0; i < BOARD_SIZE; i++) {
+                System.out.print((char) ('A' + i) + " ");
+                for (int j = 0; j < BOARD_SIZE; j++) {
+                    boolean hayBarco = false;
+                    for (Barco barco : barcos) {
+                        if (barco.getX() == i && barco.getY() == j) {
+                            System.out.print("B ");
+                            hayBarco = true;
+                            break;
+                        }
+                    }
+                    if (!hayBarco) {
+                        System.out.print(board[i][j] + " ");
+                    }
+                }
+                System.out.println();
+            }
         }
     }
 
@@ -113,6 +154,10 @@ public class Tablero {
 
     public int getNumBarcos() {
         return numBarcos;
+    }
+
+    public boolean getGameOver(){
+        return this.gameOver;
     }
 
     public void setNumBarcos(int numBarcos) {
